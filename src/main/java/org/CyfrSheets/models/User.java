@@ -1,4 +1,4 @@
 package org.CyfrSheets.models;
 
-public class User {
+public class User extends Participant {
 }
