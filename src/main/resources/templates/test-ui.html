@@ -10,24 +10,23 @@
     <h1>ScheduleSheets Test</h1>
     <h2>Test:</h2>
 
-    <form>
-        PassHashing:<br/>
-        Username:<br/>
-        <input type="text" name="user" /><br/>
-        Password:<br/>
-        <input type="text" name="pass" /><br/>
-        <input type="checkbox" name="login" th:checked="${logging-in}"> Logging in<br/>
+    <form method="post" style="max-width:600px;">
+        PassHashing:<br />
+        Username:<br />
+        <input type="text" name="user" /><br />
+        Password:<br />
+        <input type="password" name="pass" /><br />
+        <input type="checkbox" name="login" /> Logging in<br />
         <input type="submit" value="Submit" />
     </form>
     <div th:if="${registered}">
         <p>Registration Successful</p>
     </div>
-    <div th:unless="${logged-in}">
-        <h3>Not Logged In</h3>
+    <div th:if="${nameTaken}">
+        <p>Username Taken</p>
     </div>
-    <div th:if="${logged-in}">
-        <h3>Logged In</h3>
-    </div>
+    <span th:text="${loggedin} ? 'Logged In' : 'Not Logged In'"></span>
+
 </div>
 
 </body>

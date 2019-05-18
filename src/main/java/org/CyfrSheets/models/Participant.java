@@ -1,27 +1,32 @@
 package org.CyfrSheets.models;
 
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 public class Participant {
+
+    @Id
+    @GeneratedValue
+    private int id;
 
     @NotNull
     private String name;
 
-    @OneToOne
-    private PassHash secPass = null;
+    @ManyToMany
+    private List<Event> events = new ArrayList<>();
 
-    @OneToOne
+    private byte[] secPass = null;
+
+    // Figure out way to enforce unique hashes for this later
     private byte[] salt = null;
 
-    private SaltList saltList;
-
-
     public Participant(String name, String pass) {
-        saltList = saltList.getInstance();
         this.name = name;
         try {
             securePassword(pass);
@@ -36,38 +41,48 @@ public class Participant {
 
     public Participant() { }
 
+    public boolean isUser() { return false; }
+
+    public boolean checkName(String name) { return this.name.equals(name); }
+
     public boolean hasPass() {
         return secPass == null;
     }
 
-    public boolean changePassword(String pass) {
-        if ( !saltList.removeSalt(salt) ) {
-            return false;
-        }
+    public boolean checkPassword(String pass) {
         try {
-            securePassword(pass);
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(salt);
+            return isHash(md.digest(pass.getBytes()));
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("How the hell did you even get this error? What did you break? What did you <i>do?!</i> You fucked up the hash algorithm somehow, gave it anxiety.");
-            return false;
+            System.out.println("You've really fucked it up this time, haven't you my dear?");
         }
-        return true;
+        return false;
     }
 
     private void securePassword(String pass) throws NoSuchAlgorithmException {
         if ( pass == null ) { return; }
         getSalt();
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        SecureRandom sR = new SecureRandom();
 
         md.update(salt);
-        secPass = new PassHash(md.digest(pass.getBytes()));
+        secPass = md.digest(pass.getBytes());
     }
 
     private void getSalt() throws NoSuchAlgorithmException {
-        saltList.removeSalt(salt);
         SecureRandom sR = SecureRandom.getInstance("SHA1PRNG");
-        salt = new byte[32];
-        sR.nextBytes(salt);
-        saltList.addSalt(salt);
+        byte[] saltByte = new byte[32];
+        sR.nextBytes(saltByte);
+        salt = saltByte;
+    }
+
+    private boolean isHash(byte[] hash) {
+        if (secPass.length != hash.length) { return false; }
+        for (int i = 0; i < hash.length; i++) {
+            if (secPass[i] != hash[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }

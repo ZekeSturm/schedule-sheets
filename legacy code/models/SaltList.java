@@ -1,11 +1,17 @@
-package org.CyfrSheets.models;
+package org.CyfrSheets.legacy.models;
 
+import org.CyfrSheets.models.Participant;
+
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SaltList {
 
     private List<byte[]> saltList = new ArrayList<>();
+
+    @OneToMany
+    private List<Participant> participants = new ArrayList<>();
 
     private static SaltList instance;
 

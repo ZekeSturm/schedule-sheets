@@ -7,6 +7,7 @@ import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
 
+@Entity
 public class Event {
 
     //TODO: Implement Event Constructor - Needs date/time (Use 'Calendar'?), Name, Description, Key/ID
@@ -39,6 +40,7 @@ public class Event {
     @NotNull
     private Calendar endTime;
 
+    @ManyToMany(mappedBy = "events")
     private List<Participant> participants;
 
     public Event(String name, String description, Calendar startTime, Calendar endTime) {
@@ -68,6 +70,8 @@ public class Event {
         }
     }
 
+
+
     public int getId() { return id; }
     public String getName() { return name; }
     public String getDescription() { return description; }
@@ -91,6 +95,22 @@ public class Event {
     }
     public List<Participant> getParticipants() { return participants; }
 
+    public Participant getUnregParticipant(String name) {
+        for (Participant p : participants) {
+            if (p.checkName(name)) { return p; }
+        }
+        return null;
+    }
+
+    public User getRegUser(int userID) {
+        for (Participant p : participants) {
+            if (!p.isUser()) { continue; }
+            User u = (User)p;
+            if (u.checkID(userID)) { return u; }
+        }
+        return null;
+    }
+
     public void setName(String name) { this.name = name; }
     public void setDescription(String description) { this.description = description; }
     /**
@@ -100,5 +120,6 @@ public class Event {
         public void setHour(byte hour) { this.hour = hour; }
         public void setMinute(byte minute) { this.minute = minute; }
      */
-
+    public void setStartTime(Calendar startTime) { this.startTime = startTime; }
+    public void setEndTime(Calendar endTime) {this.endTime = endTime; }
 }
