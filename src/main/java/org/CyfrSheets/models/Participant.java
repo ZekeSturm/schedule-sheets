@@ -2,6 +2,7 @@ package org.CyfrSheets.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -16,6 +17,7 @@ public class Participant {
     private int id;
 
     @NotNull
+    @Size(min = 3, max = 20)
     private String name;
 
     @ManyToMany
@@ -43,7 +45,7 @@ public class Participant {
 
     public boolean isUser() { return false; }
 
-    public boolean checkName(String name) { return this.name.equals(name); }
+    public boolean checkName(String name) { return this.name.toLowerCase().equals(name.toLowerCase()); }
 
     public boolean hasPass() {
         return secPass == null;
@@ -59,6 +61,8 @@ public class Participant {
         }
         return false;
     }
+
+    public String getEmail() { return "this is in no way a valid email, I hope"; }
 
     private void securePassword(String pass) throws NoSuchAlgorithmException {
         if ( pass == null ) { return; }

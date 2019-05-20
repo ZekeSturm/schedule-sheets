@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head">
+</head>
+<body>
+
+<div th:replace="fragments :: page-header-test"></div>
+
+<div class="container body-content">
+    <div th:unless="${registered}">
+        <h1>ScheduleSheets Test</h1>
+        <h2>Test:</h2>
+    </div>
+
+    <form th:unless="${registered}" method="post" style="max-width:600px;">
+        New User Registrations:<br />
+        <div th:if="${catastrophic}">User Creation/Validation Failed</div>
+        Username:<br />
+        <input type="text" name="user" /><br />
+        <div th:if="${userEmpty}">Username Cannot be Empty</div>
+        <div th:if="${userOoB}">Username must be between 3 and 20 characters long</div>
+        <div th:if="${userTaken}">Username Taken</div>
+        Password:<br />
+        <input type="password" name="pass" /><br />
+        <div th:if="${passEmpty}">Password Cannot be Empty</div>
+        <div th:if="${passOoB}">Password must be between 8 and 32 characters long</div>
+        Confirm Passwored:<br />
+        <input type="password" name="passConfirm" /><br />
+        <div th:if="${passMismatch}">Passwords Must Match</div>
+        <div th:if="${passLengthMismatch}">Passwords must be the same length</div>
+        Email Address:<br />
+        <input type="email" name="email" /><br />
+        <div th:if="${emailEmpty}">Email Cannot be Empty</div>
+        <div th:if="${emailUsed}">Email Already In Use</div>
+        <input type="submit" value="Submit" />
+    </form>
+    <div th:if="${registered}">
+        <h1>Registration Successful</h1>
+    </div>
+
+</div>
+
+</body>
+</html>

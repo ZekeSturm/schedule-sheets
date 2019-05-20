@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html><!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head">
+</head>
+<body>
+
+<div th:replace="fragments :: page-header-test"></div>
+
+<div class="container body-content">
+    <h1>ScheduleSheets Test</h1>
+    <h2>Test:</h2>
+
+    <form method="post" style="max-width:600px;">
+        Make a New Event:<br />
+
+    </form>
+    <div th:if="${created}">
+        <p>Event Creation Successful</p>
+    </div>
+
+</div>
+
+</body>
+</html>

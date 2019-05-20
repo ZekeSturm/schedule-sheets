@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -16,9 +17,11 @@ public class User extends Participant {
     private int id;
 
     @NotNull
+    @Size(min = 3, max = 20)
     private String name;
 
     @NotNull
+    @Size(min = 5)
     private String email;
 
     private byte[] secPass;
@@ -26,14 +29,18 @@ public class User extends Participant {
     // See participant about making these unique later
     private byte[] salt;
 
-    public User(String user, String pass, String email) {
+    private boolean valid;
+
+    public User(String name, String pass, String email) throws NoSuchAlgorithmException {
         this.name = name;
         this.email = email;
         try {
             securePassword(pass);
+            valid = true;
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("How the hell did you even get this error? What did you break? What did you <i>do?!</i> You fucked up the hash algorithm somehow, gave it anxiety.");
+            valid = false;
         }
+        valid = this.name.isEmpty();
     }
 
     public User() { }
@@ -42,6 +49,8 @@ public class User extends Participant {
     public boolean isUser() { return true; }
 
     public boolean checkID(int id) { return this.id == id; }
+
+    public boolean checkName(String name) { return this.name.toLowerCase().equals(name.toLowerCase()); }
 
     public void setSecPass(byte[] secPass) { this.secPass = secPass; }
 
@@ -62,6 +71,8 @@ public class User extends Participant {
         return false;
     }
 
+    public boolean isValid() { return valid; }
+
     private void changeEmail(String email) {
         this.email = email;
     }
@@ -69,18 +80,18 @@ public class User extends Participant {
     private boolean changePassword(String pass) {
         try {
             securePassword(pass);
+            return true;
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("How the hell did you even get this error? What did you break? What did you <i>do?!</i> You fucked up the hash algorithm somehow, gave it anxiety.");
+            System.out.print("Fucked up");
             return false;
         }
-        return true;
     }
 
     private void securePassword(String pass) throws NoSuchAlgorithmException {
         if ( pass == null ) { return; }
         getSalt();
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
 
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(salt);
         secPass = md.digest(pass.getBytes());
     }

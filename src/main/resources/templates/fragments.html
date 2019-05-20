@@ -26,5 +26,19 @@
     </div>
 </div>
 
+<div th:fragment="page-header-test" class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a th:href="@{/test}" class="navbar-brand">ScheduleSheets Test</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a th:href="@{/test/register}">Register User</a></li>
+                <li><a th:href="@{/test/passhash}">PassHashing</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
