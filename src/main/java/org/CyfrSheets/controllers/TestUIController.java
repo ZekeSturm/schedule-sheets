@@ -47,7 +47,6 @@ public class TestUIController {
         // Store if there's been errors
         boolean invalid = false;
         boolean passFieldsValid = true;
-        boolean emailFieldValid = true;
 
         // Check for field emptiness or insufficient...ness. Replace this with proper validation later.
         if (user.length() < 3 || user.length() > 20) {
@@ -84,7 +83,6 @@ public class TestUIController {
 
         if (email.isEmpty()) {
             invalid = true;
-            emailFieldValid = false;
             model.addAttribute("emailEmpty",true);
         }
 
@@ -121,16 +119,15 @@ public class TestUIController {
         boolean userTaken = false;
         boolean emailUsed = false;
 
-        for (Participant p: participantDao.findAll()) {
-            if (p.isUser()) {
-                if (p.getEmail().toLowerCase().equals(email.toLowerCase())) {
-                    invalid = true;
-                    emailUsed = true;
-                }
-                if (p.checkName(user)) {
-                    invalid = true;
-                    userTaken = true;
-                }
+        for (User u: userDao.findAll()) {
+
+            if (u.getEmail().toLowerCase().equals(email.toLowerCase())) {
+                invalid = true;
+                emailUsed = true;
+            }
+            if (u.checkName(user)) {
+                invalid = true;
+                userTaken = true;
             }
         }
 
@@ -144,14 +141,11 @@ public class TestUIController {
 
         try {
             User partyboi = new User(user, pass, email);
-            if (partyboi.isValid()) {
-                userDao.save(partyboi);
-                model.addAttribute("registered", true);
-            } else {
-                model.addAttribute("catastrophic", true);
-                model.addAttribute("registered", false);
-            }
+            userDao.save(partyboi);
+            model.addAttribute("registered", true);
         } catch (NoSuchAlgorithmException e) {
+            System.out.println("How the fuck did you manage this?");
+            model.addAttribute("registered", false);
         }
 
         return "test-ui-register-user";

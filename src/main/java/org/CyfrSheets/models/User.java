@@ -24,23 +24,28 @@ public class User extends Participant {
     @Size(min = 5)
     private String email;
 
+    @NotNull
     private byte[] secPass;
 
     // See participant about making these unique later
+    @NotNull
     private byte[] salt;
 
-    private boolean valid;
+    // private boolean noNPE = true;
+
+    private String npeLoc;
 
     public User(String name, String pass, String email) throws NoSuchAlgorithmException {
         this.name = name;
         this.email = email;
         try {
             securePassword(pass);
-            valid = true;
+            // noNPE = true;
         } catch (NoSuchAlgorithmException e) {
-            valid = false;
+            this.name = "";
+            // noNPE = false;
+            // hasNPE("Primary constructor");
         }
-        valid = this.name.isEmpty();
     }
 
     public User() { }
@@ -71,7 +76,22 @@ public class User extends Participant {
         return false;
     }
 
-    public boolean isValid() { return valid; }
+    // Check for NPE during construction. Broken rn.
+    /**
+    public String hasNPE(String method) {
+        if (noNPE) {
+            return "No Null Pointer Exception";
+        }
+        npeLoc = method;
+        return "Null Pointer Exception in " + method;
+    } */
+
+    /**
+     boolean hasNPE() {
+        return !noNPE;
+    } */
+
+    public String getNpeLoc() { return npeLoc; }
 
     private void changeEmail(String email) {
         this.email = email;

@@ -1,8 +1,6 @@
 package org.CyfrSheets.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -16,8 +14,6 @@ public class Participant {
     @GeneratedValue
     private int id;
 
-    @NotNull
-    @Size(min = 3, max = 20)
     private String name;
 
     @ManyToMany
@@ -27,6 +23,9 @@ public class Participant {
 
     // Figure out way to enforce unique hashes for this later
     private byte[] salt = null;
+
+    // Makeshift validation
+    private boolean isValid;
 
     public Participant(String name, String pass) {
         this.name = name;
@@ -63,6 +62,8 @@ public class Participant {
     }
 
     public String getEmail() { return "this is in no way a valid email, I hope"; }
+
+    public boolean isValid() { return isValid; }
 
     private void securePassword(String pass) throws NoSuchAlgorithmException {
         if ( pass == null ) { return; }
