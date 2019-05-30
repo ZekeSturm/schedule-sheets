@@ -1,4 +1,4 @@
-package org.CyfrSheets.models;
+package org.CyfrSheets.models.utilities;
 
 public class Sanitizer {
 

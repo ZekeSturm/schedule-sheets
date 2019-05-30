@@ -1,5 +1,8 @@
 package org.CyfrSheets.models;
 
+import org.CyfrSheets.models.data.UserDao;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,6 +14,9 @@ import java.security.SecureRandom;
 
 @Entity
 public class User extends Participant {
+
+    @Autowired
+    private UserDao userDao;
 
     @Id
     @GeneratedValue
@@ -52,6 +58,9 @@ public class User extends Participant {
 
     @Override
     public boolean isUser() { return true; }
+
+    @Override
+    public boolean hasPass() { return true; }
 
     public boolean checkID(int id) { return this.id == id; }
 
@@ -117,10 +126,25 @@ public class User extends Participant {
     }
 
     private void getSalt() throws NoSuchAlgorithmException {
+        boolean unique = false;
         SecureRandom sR = SecureRandom.getInstance("SHA1PRNG");
         byte[] saltByte = new byte[32];
-        sR.nextBytes(saltByte);
+        while (!unique) {
+            sR.nextBytes(saltByte);
+            unique = !usedSalt(saltByte);
+        }
         salt = saltByte;
+    }
+
+    private boolean usedSalt(byte[] salt) {
+        for (User u : userDao.findAll()) {
+            boolean same = true;
+            for (int i = 0; i < salt.length; i++) {
+                if (u.salt[i] != salt[i]) same = false;
+            }
+            if (same) return true;
+        }
+        return false;
     }
 
     private boolean isHash(byte[] hash) {

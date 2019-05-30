@@ -1,7 +1,5 @@
 package org.CyfrSheets.controllers;
 
-
-import org.CyfrSheets.models.Participant;
 import org.CyfrSheets.models.User;
 import org.CyfrSheets.models.data.ParticipantDao;
 import org.CyfrSheets.models.data.UserDao;
@@ -159,7 +157,7 @@ public class TestUIController {
         return "test-ui-login-register";
     }
 
-    @RequestMapping(value = "passhash", method = RequestMethod.POST)
+/**    @RequestMapping(value = "passhash", method = RequestMethod.POST)
     public String testPassHash(Model model, @RequestParam String user, @RequestParam String pass, @RequestParam(defaultValue = "false") boolean login) {
 
         Boolean loggedIn = false;
@@ -173,14 +171,14 @@ public class TestUIController {
                 }
             }
 
-            /**
-            for (Participant p : participants) {
+
+            for (TempUser p : participants) {
                 if (p.checkName(user)) {
                     loggedIn = p.checkPassword(pass);
                     if (loggedIn) { break; }
                 }
             }
-             */
+
 
             model.addAttribute("loggedin",loggedIn);
 
@@ -201,11 +199,11 @@ public class TestUIController {
             }
         }
 
-        participantDao.save(new Participant(user, pass));
+        participantDao.save(new TempUser(user, pass));
         model.addAttribute("registered",true);
 
         return "test-ui-login-register";
-    }
+    } */
 
     private boolean isValid(boolean invalid, Model model) {
         if (invalid) {
