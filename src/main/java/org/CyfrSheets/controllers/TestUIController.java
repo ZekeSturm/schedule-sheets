@@ -1,7 +1,6 @@
 package org.CyfrSheets.controllers;
 
 import org.CyfrSheets.models.User;
-import org.CyfrSheets.models.data.ParticipantDao;
 import org.CyfrSheets.models.data.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,8 +15,8 @@ import java.security.NoSuchAlgorithmException;
 @RequestMapping("test")
 public class TestUIController {
 
-    @Autowired
-    private ParticipantDao participantDao;
+    /** @Autowired
+    private ParticipantDao participantDao; */
 
     @Autowired
     private UserDao userDao;

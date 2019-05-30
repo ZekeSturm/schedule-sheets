@@ -3,7 +3,7 @@ package org.CyfrSheets.models;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-abstract class Participant {
+public class Participant {
 
     private String name = "Abstract Placeholder";
 
@@ -13,6 +13,11 @@ abstract class Participant {
 
     public boolean isUser() { return false; }
     public boolean hasPass() { return false; }
+
+    public String getName() { return name; }
+
+    public boolean isEqual(Participant p) { return false; }
+    public boolean isEqual(User u) { return false; }
 
     public boolean checkName(String name) { return this.name.toLowerCase().equals(name.toLowerCase()); }
 

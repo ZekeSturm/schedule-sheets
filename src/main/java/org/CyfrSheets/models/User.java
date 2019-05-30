@@ -64,8 +64,6 @@ public class User extends Participant {
 
     public boolean checkID(int id) { return this.id == id; }
 
-    public boolean checkName(String name) { return this.name.toLowerCase().equals(name.toLowerCase()); }
-
     public void setSecPass(byte[] secPass) { this.secPass = secPass; }
 
     public String getEmail() { return email; }
@@ -114,6 +112,13 @@ public class User extends Participant {
             System.out.print("Fucked up");
             return false;
         }
+    }
+
+    public boolean isEqual(User u) {
+        if ( !u.checkID(this.id) ) return false;
+        if ( !u.checkName(this.name) ) return false;
+        if ( !u.getEmail().equals(this.getEmail()) ) return false;
+        return true;
     }
 
     private void securePassword(String pass) throws NoSuchAlgorithmException {

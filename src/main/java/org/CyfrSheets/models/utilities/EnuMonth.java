@@ -1,4 +1,4 @@
-package org.CyfrSheets.models;
+package org.CyfrSheets.models.utilities;
 
 public enum EnuMonth {
     JANUARY ("January", 1),
@@ -12,7 +12,8 @@ public enum EnuMonth {
     SEPTEMBER ("September", 9),
     OCTOBER ("October", 10),
     NOVEMBER ("November", 11),
-    DECEMBER ("December", 12);
+    DECEMBER ("December", 12),
+    NULLMONTH ("N/A", -1);
 
     private final String monthName;
     private final int monthNum;

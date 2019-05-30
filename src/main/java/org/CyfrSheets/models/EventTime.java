@@ -1,5 +1,9 @@
 package org.CyfrSheets.models;
 
+import org.CyfrSheets.models.utilities.EnuMonth;
+
+import java.util.Calendar;
+
 public class EventTime {
 
     private TimeType tType;
@@ -10,6 +14,9 @@ public class EventTime {
 
     private boolean staticEvent;
     private boolean startOnly;
+
+    private Calendar startTime;
+    private Calendar endTime;
 
     private EnuMonth startMonth;
     private EnuMonth endMonth;
@@ -34,6 +41,23 @@ public class EventTime {
     }
 
     public EventTime() { }
+
+    public EnuMonth getStartMonth() { return startMonth; }
+
+    private void staticInit() {
+        staticEvent = true;
+        if (startOnly) {
+            endMonth = EnuMonth.NULLMONTH;
+            endDay = -1;
+            endHour = -1;
+            endMinute = -1;
+        }
+    }
+
+    private void planningInit() {
+        staticEvent = false;
+        startOnly = false;
+    }
 
     public String toString() {
         String output = new String();
@@ -99,15 +123,6 @@ public class EventTime {
         output += " of " + endMonth;
 
         return output;
-    }
-
-    private void staticInit() {
-        staticEvent = true;
-    }
-
-    private void planningInit() {
-        staticEvent = false;
-        startOnly = false;
     }
 
     private String numSuffix(int num, String input) {

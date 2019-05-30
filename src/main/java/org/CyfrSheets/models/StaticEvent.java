@@ -13,7 +13,14 @@ public class StaticEvent extends SEvent {
 
     private String desc;
 
-    public StaticEvent(EventType type, EventTime time, String desc) { super(type, time, desc); }
+    public StaticEvent(EventType type, EventTime time,String name, String desc) { super(type, time, name, desc); }
 
     public StaticEvent() { }
+
+    public StaticEvent initStartOnly(EventType type, String name, String desc) {
+        EventTime time = new EventTime(this,true);
+
+
+        return new StaticEvent();
+    }
 }
