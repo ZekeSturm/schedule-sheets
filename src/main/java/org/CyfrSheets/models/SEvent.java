@@ -37,11 +37,12 @@ public class SEvent {
 
     // Possible location field goes here
 
-    public SEvent(EventType type, EventTime time, String name, String desc) {
+    public SEvent(EventType type, EventTime time, String name, String desc, Participant creator) {
         this.name = name;
         this.type = type;
         this.time = time;
         this.desc = desc;
+        this.creator = creator;
     }
 
     public SEvent() { }

@@ -2,6 +2,7 @@ package org.CyfrSheets.models;
 
 import org.CyfrSheets.models.utilities.EnuMonth;
 
+import java.awt.*;
 import java.util.Calendar;
 
 public class EventTime {
@@ -30,19 +31,24 @@ public class EventTime {
     private int startMinute;
     private int endMinute;
 
-    public EventTime(SEvent parent, boolean startOnly) {
+    public EventTime(SEvent parent, boolean startOnly, Calendar startTime, Calendar endTime)
+            throws EventTypeMismatchException {
         parentType = parent.getType();
         this.startOnly = startOnly;
         if ( parentType.isPlanning() ) {
+            if (startOnly) throw new EventTypeMismatchException("Planning Event Must Have End Time");
             planningInit();
         } else {
             staticInit();
         }
     }
 
+    public EventTime(SEvent parent, Calendar startTime) throws EventTypeMismatchException
+    { this(parent, true, startTime, null); }
+
     public EventTime() { }
 
-    public EnuMonth getStartMonth() { return startMonth; }
+
 
     private void staticInit() {
         staticEvent = true;
@@ -152,3 +158,7 @@ public class EventTime {
 }
 
 enum TimeType { TWELVE, TWENTYFOUR }
+
+class EventTypeMismatchException extends Exception {
+    EventTypeMismatchException(String s) { super(s); }
+}
