@@ -12,6 +12,13 @@ public class EventController {
     @Autowired
     private UserDao userDao;
 
+
+
+    // Probably merge this properly into a webpage, but may be simpler to leave this as its own function and hand off to it. Writing it with that in mind - EDIT: Kind of baked this into populateForm in the form class itself, so this has become somewhat redundant.
+    /** public SEvent handleEventCreationForm(boolean statEvent, boolean oneDay, String eName, String eDesc, String sDate, String eDate, String sTime, String eTime) {
+
+    } */
+
     private LoginErrorLog handleNewLogin(String username, String pass, SEvent container) {
         LoginErrorLog eLog = new LoginErrorLog();
         boolean logSuccess = false;

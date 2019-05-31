@@ -8,6 +8,5 @@ public class PlanningEvent extends SEvent {
     private EventType type;
     private EventTime time;
 
-
-
+    // Fully implement this class later
 }

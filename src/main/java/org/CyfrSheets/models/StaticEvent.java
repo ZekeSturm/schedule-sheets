@@ -1,28 +1,28 @@
 package org.CyfrSheets.models;
 
+import org.CyfrSheets.models.exceptions.UnregisteredUserException;
+
 import javax.persistence.Entity;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.List;
 
 @Entity
 public class StaticEvent extends SEvent {
 
-    private EventType type;
-    private EventTime time;
-
-    private ArrayList<Participant> participants = new ArrayList<>();
-
-    private String desc;
-
-    public StaticEvent(EventType type, EventTime time,String name, String desc, Participant creator) { super(type, time, name, desc, creator); }
+    public StaticEvent(EventType type, EventTime time, String name, String desc, Participant creator)
+    { super(type, time, name, desc, creator); }
 
     public StaticEvent() { }
 
-    public StaticEvent initStartOnly(EventType type, String name, String desc, Calendar timeCal) {
-        EventTime time = new EventTime(this,true);
+    protected boolean creatorCheck(Participant p) throws UnregisteredUserException
+    { return super.creatorCheck(p); }
 
-
-
-        return new StaticEvent();
-    }
+    public int getId() { return super.getId(); }
+    public String getName() { return super.getName(); }
+    public String getDesc() { return super.getDesc(); }
+    public EventType getType() { return super.getType(); }
+    public EventTime getTime() { return super.getTime(); }
+    public ArrayList<Participant> getParticipants() { return super.getParticipants(); }
+    public ArrayList<TempUser> getTempUsers() { return super.getTempUsers(); }
+    public List<User> getRegUsers() { return super.getRegUsers(); }
 }

@@ -1,15 +1,14 @@
 package org.CyfrSheets.models;
 
-import org.CyfrSheets.models.utilities.EnuMonth;
+import org.CyfrSheets.models.exceptions.EventTypeMismatchException;
 
-import java.awt.*;
 import java.util.Calendar;
+
+import static org.CyfrSheets.models.EventType.*;
 
 public class EventTime {
 
     private TimeType tType;
-
-    private SEvent parent;
 
     private EventType parentType;
 
@@ -19,146 +18,70 @@ public class EventTime {
     private Calendar startTime;
     private Calendar endTime;
 
-    private EnuMonth startMonth;
-    private EnuMonth endMonth;
+    // Implement Planning Event participant/time pairs in hashmaps here... at some point.
 
-    private int startDay;
-    private int endDay;
-
-    private int startHour;
-    private int endHour;
-
-    private int startMinute;
-    private int endMinute;
-
-    public EventTime(SEvent parent, boolean startOnly, Calendar startTime, Calendar endTime)
+    public EventTime(EventType parentType, Calendar startTime, Calendar endTime)
             throws EventTypeMismatchException {
-        parentType = parent.getType();
-        this.startOnly = startOnly;
-        if ( parentType.isPlanning() ) {
+        this.parentType = parentType;
+
+        if (parentType == SDP || parentType == MDP) {
             if (startOnly) throw new EventTypeMismatchException("Planning Event Must Have End Time");
-            planningInit();
+            planningInit(startTime, endTime);
         } else {
-            staticInit();
+            if (startOnly) staticInit(startTime);
+            else staticInit(startTime, endTime);
         }
     }
 
-    public EventTime(SEvent parent, Calendar startTime) throws EventTypeMismatchException
-    { this(parent, true, startTime, null); }
+    public EventTime(Calendar startTime) throws EventTypeMismatchException
+    { this(SOS,startTime,null); }
 
     public EventTime() { }
 
+    public Calendar getStartTime() { return startTime; }
+    public Calendar getEndTime() throws EventTypeMismatchException {
+        if (startOnly) throw new EventTypeMismatchException("Events tagged with startOnly do not have an end time");
+        return endTime;
+    }
 
+    public EventType fetchType() { return parentType; }
 
-    private void staticInit() {
+    // When adding below getters/setters, add checks for "is this a planning event or not". Throw
+    // EventTypeMismatchException for attempting to access from static event
+
+    // Getter methods for participant/time pairs go here. May make these a further subclass but it would be an in-class
+    // subclass and would still export standard hashmap key/value pairs at the public level
+
+    // Setter methods for participant/time pairs go here. See above. Required for planning events.
+
+    private void staticInit(Calendar startTime, Calendar endTime) {
+        this.endTime = endTime;
+        staticInit(startTime);
+    }
+
+    private void staticInit(Calendar startTime) {
+        this.startTime = startTime;
         staticEvent = true;
-        if (startOnly) {
-            endMonth = EnuMonth.NULLMONTH;
-            endDay = -1;
-            endHour = -1;
-            endMinute = -1;
-        }
     }
 
-    private void planningInit() {
+    private void planningInit(Calendar startTime, Calendar endTime) {
         staticEvent = false;
-        startOnly = false;
     }
-
-    public String toString() {
-        String output = new String();
-
-        if (!staticEvent) {
-            output = "Somewhere from ";
-        } else if(!startOnly) {
-            output = "From";
-        }
-
-        output += startMonth.getName() + " " + startDay;
-        output = numSuffix(startDay, output);
-        output += "at ";
-
-        switch (tType) {
-            case TWELVE:
-                boolean am = true;
-                if (startHour > 12) {
-                    output += (startHour - 12);
-                    am = false;
-                }
-                else if (startHour == 0) output += "12";
-                else output += startHour;
-                if (startHour == 12) am = false;
-                output += ":" + startMinute;
-                if (am) output += "AM";
-                else output += "PM";
-            case TWENTYFOUR:
-                if (startHour < 10) output += "0";
-                output += startHour + startMinute + "Hours";
-        }
-
-        if (startOnly) return output;
-
-        output += " to ";
-
-
-        switch (tType) {
-            case TWELVE:
-                boolean am = true;
-                if (endHour > 12) {
-                    output += (endHour - 12);
-                    am = false;
-                }
-                else if (endHour == 0) output += "12";
-                else output += endHour;
-                if (endHour == 12) am = false;
-                output += ":" + endMinute;
-                if (am) output += "AM";
-                else output += "PM";
-            case TWENTYFOUR:
-                if (endHour < 10) output += "0";
-                output += endHour + endMinute + "Hours";
-        }
-
-        if (startDay == endDay) return output;
-
-        output += " on the ";
-        output = numSuffix(endDay, output);
-
-        if (startMonth == endMonth) return output;
-
-        output += " of " + endMonth;
-
-        return output;
-    }
-
-    private String numSuffix(int num, String input) {
-        String sInput = input;
-        input = isFirst(num, input);
-        input = isSecond(num, input);
-        input = isThird(num, input);
-        if (sInput.equals(input)) {
-            input += "th, ";
-        }
-        return input;
-    }
-
-    private String isFirst(int num, String input) {
-        if (num == 1 || num == 21 || num == 31) input += "st, ";
-        return input;
-    }
-    private String isSecond(int num, String input) {
-        if (num == 2 || num == 22) input += "nd, ";
-        return input;
-    }
-    private String isThird(int num, String input) {
-        if (num == 3 || num == 23) input += "rd, ";
-        return input;
-    }
-
 }
 
 enum TimeType { TWELVE, TWENTYFOUR }
 
-class EventTypeMismatchException extends Exception {
-    EventTypeMismatchException(String s) { super(s); }
-}
+/**
+ Legacy typefinder code - may be useful to export elsewhere
+
+    private EventType findParentType(Calendar startTime, Calendar endTime) {
+        if (endTime == null) return SOS;
+        if (startTime.get(DATE) == endTime.get(DATE)) {
+            if (staticEvent) return SDS;
+            else return SDP;
+        } else {
+            if (staticEvent) return MDS;
+            else return MDP;
+        }
+    }
+ */

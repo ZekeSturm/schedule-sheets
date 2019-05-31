@@ -1,6 +1,6 @@
 package org.CyfrSheets.models;
 
-import com.sun.xml.internal.bind.v2.TODO;
+import org.CyfrSheets.models.exceptions.UnregisteredUserException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -80,10 +80,11 @@ public class SEvent {
      }
      */
 
-    private boolean creatorCheck(Participant p) throws UnregisteredUserException {
+    // Essentially unnecessary until the above is implemented
+    protected boolean creatorCheck(Participant p) throws UnregisteredUserException {
         if (p.isUser()) {
             if (!p.isEqual(creator)) {
-                throw new UnregisteredUserException("You are not authorized to make this change");
+                return false;
             }
             return true;
         }
@@ -91,16 +92,11 @@ public class SEvent {
     }
 
     public int getId() { return id; }
+    public String getName() { return name; }
+    public String getDesc() { return desc; }
     public EventType getType() { return type; }
     public EventTime getTime() { return time; }
-    public String getDesc() { return desc; }
     public ArrayList<Participant> getParticipants() { return participants; }
     public ArrayList<TempUser> getTempUsers() { return tempUsers; }
     public List<User> getRegUsers() { return regUsers; }
-}
-
-class UnregisteredUserException extends Exception {
-
-    public UnregisteredUserException(String s) { super(s); }
-
 }
