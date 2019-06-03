@@ -6,14 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-public class User extends Participant {
+public class User implements Participant {
 
     @Autowired
     private UserDao userDao;
@@ -30,12 +33,18 @@ public class User extends Participant {
     @Size(min = 5)
     private String email;
 
+    @ManyToMany(mappedBy = "regUsers")
+    private List<SEvent> events;
+
     @NotNull
     private byte[] secPass;
 
     // See participant about making these unique later
     @NotNull
     private byte[] salt;
+
+    private ArrayList<byte[]> cSaltList;
+    private boolean cSaltListYN = false;
 
     // private boolean noNPE = true;
 
@@ -56,15 +65,15 @@ public class User extends Participant {
 
     public User() { }
 
-    @Override
-    public boolean isUser() { return true; }
-
-    @Override
-    public boolean hasPass() { return true; }
+    public boolean registered() { return true; }
 
     public boolean checkID(int id) { return this.id == id; }
 
     public void setSecPass(byte[] secPass) { this.secPass = secPass; }
+
+    public String getName() { return name; }
+
+    public int getID() { return id; }
 
     public String getEmail() { return email; }
 
@@ -82,6 +91,13 @@ public class User extends Participant {
         }
         return false;
     }
+
+    public void passTheSalt(byte[] salt) {
+        cSaltListInit();
+        cSaltList.add(salt);
+    }
+
+    public ArrayList<byte[]> giveTheShaker(int eID) { return cSaltList; }
 
     // Check for NPE during construction. Broken rn.
     /**
@@ -114,11 +130,34 @@ public class User extends Participant {
         }
     }
 
-    public boolean isEqual(User u) {
-        if ( !u.checkID(this.id) ) return false;
-        if ( !u.checkName(this.name) ) return false;
-        if ( !u.getEmail().equals(this.getEmail()) ) return false;
+    public boolean isEqual(Participant p) {
+        if (!p.registered()) return false;
+        User u = (User)p;
+        if (!u.checkID(this.id)) return false;
+        if (!u.checkName(this.name)) return false;
+        if (!u.getEmail().equals(this.getEmail())) return false;
         return true;
+    }
+
+    public boolean checkName(String name) {
+        return this.name.toLowerCase().equals(name.toLowerCase());
+    }
+
+    public boolean checkPassword(String pass) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(salt);
+            return isHash(md.digest(pass.getBytes()));
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("You've really fucked it up this time, haven't you my dear?");
+        }
+        return false;
+    }
+
+    private void cSaltListInit() {
+        if (cSaltListYN) return;
+        cSaltListYN = true;
+        cSaltList = new ArrayList<>();
     }
 
     private void securePassword(String pass) throws NoSuchAlgorithmException {

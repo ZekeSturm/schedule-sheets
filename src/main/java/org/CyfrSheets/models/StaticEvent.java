@@ -1,7 +1,5 @@
 package org.CyfrSheets.models;
 
-import org.CyfrSheets.models.exceptions.UnregisteredUserException;
-
 import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +12,7 @@ public class StaticEvent extends SEvent {
 
     public StaticEvent() { }
 
-    protected boolean creatorCheck(Participant p) throws UnregisteredUserException
+    protected boolean creatorCheck(Participant p)
     { return super.creatorCheck(p); }
 
     public int getId() { return super.getId(); }

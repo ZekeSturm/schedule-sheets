@@ -42,16 +42,3 @@ public class EventBuilder {
 
     // TODO: Initialize Planning events here. Planning Events not yet implemented, so do that first.
 }
-
-// Old base initStartOnly code
-/** try {
- EventTime time = new EventTime(parent, timeCal);
- type = SOS;
- } catch (EventTypeMismatchException e) {
- throw new EventTypeMismatchException
- ("Somehow, you've managed to force this to make an error (StaticEvent.initStartOnly). " +
- "The error message was as follows:\n" + e.getMessage());
- }
- // Placeholder to make the errors go away - remove when complete
- return new StaticEvent();
- } */

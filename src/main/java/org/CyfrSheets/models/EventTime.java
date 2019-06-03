@@ -66,6 +66,7 @@ public class EventTime {
 
     private void planningInit(Calendar startTime, Calendar endTime) {
         staticEvent = false;
+        // Initialize participant/timeblock storage here
     }
 }
 
